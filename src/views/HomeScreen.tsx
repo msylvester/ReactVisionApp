@@ -1,21 +1,39 @@
 // HomeScreen.tsx
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Button
+} from 'react-native';
+import PictureCollection from '../Components/PictureCollection';
 
-interface HomeScreenProps {
-    navigation: any; // or use appropriate navigation type
-}
+function HomeScreen() {
+    const openImagePicker = () => <PictureCollection />;
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Home Screen</Text>
-            <Button
-                title="Go to Details"
-                onPress={() => navigation.navigate('Details')}
-            />
+        <View style={styles.container}>
+            <View style={styles.imageCollection} />
+            <View style={styles.imagePick}>            {/* <Button title="Open from Device" onPress={openImagePicker} /> */}
+                {/* <PictureCollection /> */}
+            </View>
         </View>
     );
-};
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    imageCollection: {
+        flex: 3,
+        backgroundColor: 'blue', // Adjust styling as needed
+    },
+    imagePick: {
+        flex: 1,
+        backgroundColor: 'green', // Adjust styling as needed
+    },
+});
 
 export default HomeScreen;
