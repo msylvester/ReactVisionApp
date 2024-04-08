@@ -7,14 +7,17 @@ import {
     Button
 } from 'react-native';
 import PictureCollection from '../Components/PictureCollection';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function HomeScreen() {
     const openImagePicker = () => <PictureCollection />;
 
     return (
+        // <SafeAreaView><Text>hello chat me </Text></SafeAreaView>
         <View style={styles.container}>
             <View style={styles.imageCollection} />
-            <View style={styles.imagePick}>            {/* <Button title="Open from Device" onPress={openImagePicker} /> */}
+            <View style={styles.imagePick}>
+                <Button title="Open from Device" onPress={openImagePicker} />
                 {/* <PictureCollection /> */}
             </View>
         </View>

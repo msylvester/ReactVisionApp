@@ -37,7 +37,7 @@ const LoginScreen = () => {
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
-            />
+            />cd
             <TextInput
                 placeholder="Password"
                 value={password}
