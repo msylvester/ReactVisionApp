@@ -17,14 +17,14 @@ import {
     useSelector
 } from 'react-redux';
 import { store, setUser } from './store';
-import App1 from './App1'
+import App from './App'
 
 function AppProvider() {
 
 
     return (
         <Provider store={store}>
-            <App1 />
+            <App />
         </Provider>
     );
 }

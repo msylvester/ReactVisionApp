@@ -12,6 +12,7 @@ import ProjectScreen from './Views/ProjectScreen';
 import { Camera } from 'react-native-vision-camera';
 import type { Routes } from './Routes';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import PermissionsScreen from './Views/PermissionsScreen'
 // import Icon from 'react-native-vector-icons/Ionicons';
 
 // Screens
@@ -35,7 +36,7 @@ const AppNavigator = props => {
                 statusBarStyle: 'dark',
                 animationTypeForReplace: 'push',
             }}
-            initialRouteName={initialRouteName}>
+            initialRouteName={'PermissionsScreen'}>
 
             <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
             <Stack.Screen
@@ -50,6 +51,8 @@ const AppNavigator = props => {
             //     ),
             // })}
             />
+
+            <Stack.Screen name="PermissionsScreen" component={PermissionsScreen} />
         </Stack.Navigator >
     );
 };
