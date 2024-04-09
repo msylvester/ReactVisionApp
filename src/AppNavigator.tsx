@@ -24,9 +24,6 @@ import SignUpScreen from './Views/SignUpScreen';
 const Stack = createStackNavigator();
 
 const AppNavigator = props => {
-    // const cameraPermission = Camera.getCameraPermissionStatus();
-    // const microphonePermission = Camera.getMicrophonePermissionStatus();
-    // const showPermissionsPage = cameraPermission !== 'granted' || microphonePermission === 'not-determined'
 
     const { initialRouteName } = props;
     console.log(`here is the initial route name ${initialRouteName}`)

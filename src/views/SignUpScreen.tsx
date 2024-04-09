@@ -1,12 +1,11 @@
 
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../store';
-
-
+import HomeScreen from './HomeScreen';
 
 const SignUpScreen = () => {
     const user = useSelector((state) => state.user.user);
@@ -14,18 +13,23 @@ const SignUpScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
+    const [hasSignedUp, setHasSignedUp] = useState('')
     const navigation = useNavigation();
     console.log(`username: ${user?.username}`)
+
     const handleSignUp = () => {
         // TODO: Implement sign-up logic (e.g., with Firebase auth)
         const userName = 'jane.doe2@example.com'
         auth()
-            .createUserWithEmailAndPassword(userName, 'SuperSecretPassword!')
+            .createUserWithEmailAndPassword(email, password)
             .then(() => {
                 console.log('User account created & signed in!');
+
                 dispatch(setUser({
                     ...user, username: userName
                 }));
+                setHasSignedUp('success')
+
             })
             .catch(error => {
                 if (error.code === 'auth/email-already-in-use') {
@@ -44,9 +48,17 @@ const SignUpScreen = () => {
         console.log('handleSignUp');
     };
 
+    useEffect(() => {
+        if (hasSignedUp === 'success') {
+            navigation.navigate('HomeScreen');
+        }
+    }, [hasSignedUp, navigation]);
+
+
+
     return (
         <View style={styles.container}>
-            <Text style={{ color: '#e93766', fontSize: 40 }}>Sign Up</Text>
+            <Text style={{ color: '#e93766', fontSize: 34 }}>Join Leggo My Eggo</Text>
             {errorMessage && (
                 <Text style={{ color: 'red' }}>{errorMessage}</Text>
             )}
@@ -72,12 +84,8 @@ const SignUpScreen = () => {
             />
             <View>
                 <Text>
-                    Already have an account?{' '}
-                    <Text
-                        onPress={() => navigation?.navigate('Login')}
-                        style={{ color: '#e93766', fontSize: 18 }}>
-                        Login
-                    </Text>
+                    Continue Without Logging In?
+
                 </Text>
             </View>
         </View>

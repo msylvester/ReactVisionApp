@@ -1,6 +1,6 @@
 export type Routes = {
     PermissionsPage: undefined
     SignUpScreen: undefined
-    LoginScreen: undefined
+    HomeScreen: undefined
     ProjectScreen: undefined
 }

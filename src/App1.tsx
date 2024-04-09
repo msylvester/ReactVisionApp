@@ -18,7 +18,6 @@ import {
 } from 'react-redux';
 import { store, setUser } from './store';
 import HomeScreen from './Views/HomeScreen';
-import LoginScreen from './Views/LoginScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignUpScreen from './Views/SignUpScreen';
 
