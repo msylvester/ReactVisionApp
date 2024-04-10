@@ -7,6 +7,8 @@ const userSlice = createSlice({
   initialState: {
     user: {
       username: '',
+      permissionCamera: false,
+      permissionPhotolibrary: false,
     },
   },
   reducers: {
@@ -16,10 +18,18 @@ const userSlice = createSlice({
     clearUser: state => {
       state.user = null;
     },
+    //send true
+    setCameraPermission: (state, action) => {
+      state.permissionCamera = action.payload;
+    },
+    clearCameraPermission: state => {
+      state.permissionCamera = false;
+    },
   },
 });
 
-export const {setUser, clearUser} = userSlice.actions;
+export const {setUser, clearUser, setCameraPermission, clearCameraPermission} =
+  userSlice.actions;
 
 export const selectUser = state => state.user.user;
 

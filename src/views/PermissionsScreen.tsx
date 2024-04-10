@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
+import { setCameraPermission, clearCameraPermission } from '../store'
+import { useDispatch, useSelector } from 'react-redux';
 
 const PermissionsScreen = () => {
     const [image, setImage] = useState(null);

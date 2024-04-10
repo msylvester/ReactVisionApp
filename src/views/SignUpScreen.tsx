@@ -20,6 +20,7 @@ const SignUpScreen = () => {
     const handleSignUp = () => {
         // TODO: Implement sign-up logic (e.g., with Firebase auth)
         const userName = 'jane.doe2@example.com'
+
         auth()
             .createUserWithEmailAndPassword(email, password)
             .then(() => {
@@ -83,10 +84,11 @@ const SignUpScreen = () => {
                 onPress={handleSignUp}
             />
             <View>
-                <Text>
-                    Continue Without Logging In?
-
-                </Text>
+                <Button
+                    title="Skip Login"
+                    color="#e93766"
+                    onPress={() => navigation.navigate('PermissionsPage')}
+                />
             </View>
         </View>
     );

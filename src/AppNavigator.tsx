@@ -12,9 +12,9 @@ import ProjectScreen from './Views/ProjectScreen';
 import { Camera } from 'react-native-vision-camera';
 import type { Routes } from './Routes';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import PermissionsScreen from './Views/PermissionsScreen'
+//import PermissionsScreen from './Views/PermissionsScreen'
 // import Icon from 'react-native-vector-icons/Ionicons';
-
+import PermissionsPage from './PermissionsPage';
 // Screens
 import HomeScreen from './Views/HomeScreen';
 
@@ -42,17 +42,13 @@ const AppNavigator = props => {
             <Stack.Screen
                 name="HomeScreen"
                 component={HomeScreen}
-            // options={({ navigation }) => ({
-            //     headerTitle: 'Home',
-            //     headerLeft: () => (
-            //         <TouchableOpacity onPress={() => navigation.navigate('Details')}>
-            //             <Text>Press Here</Text>
-            //         </TouchableOpacity>
-            //     ),
-            // })}
+                options={({ navigation }) => ({
+                    headerTitle: 'Home',
+                    headerLeft: null,
+                })}
             />
 
-            <Stack.Screen name="PermissionsScreen" component={PermissionsScreen} />
+            <Stack.Screen name="PermissionsPage" component={PermissionsPage} />
         </Stack.Navigator >
     );
 };
