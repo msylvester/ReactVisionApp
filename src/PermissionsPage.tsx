@@ -6,11 +6,11 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ImageRequireSource, Linking } from 'react-native'
-
+import { setUser, setCameraPermission } from './store';
 import { StyleSheet, View, Text, Image } from 'react-native'
 import { Camera, CameraPermissionStatus } from 'react-native-vision-camera'
 import { CONTENT_SPACING, SAFE_AREA_PADDING } from './Constants'
-
+import { useDispatch, useSelector } from 'react-redux';
 import type { Routes } from './Routes'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -22,8 +22,11 @@ const PERMISSIONS_PHOTO_LIBRARY = 'LeggoMyEggo has permission to add images to y
 
 // type Props = NativeStackScreenProps<Routes, 'PermissionsPage'>
 function PermissionsPage({ navigation }: Props): React.ReactElement {
+    const user = useSelector((state) => state.user.user);
+    const dispatch = useDispatch();
     const [cameraPermissionStatus, setCameraPermissionStatus] = useState<CameraPermissionStatus>('not-determined')
     const [microphonePermissionStatus, setMicrophonePermissionStatus] = useState<CameraPermissionStatus>('not-determined')
+
 
     const requestMicrophonePermission = useCallback(async () => {
         console.log('Requesting microphone permission...')
@@ -38,21 +41,31 @@ function PermissionsPage({ navigation }: Props): React.ReactElement {
         console.log('Requesting camera permission...')
         const permission = await Camera.requestCameraPermission()
         console.log(`Camera permission status: ${permission}`)
-
+        if (permission !== 'denied') {
+            dispatch(setUser({
+                ...user, cameraPermissionStatus: true
+            }));
+            console.log(`Camera permission status: ${permission}`)
+        }
         // if (permission === 'denied') await Linking.openSettings()
         // setCameraPermissionStatus(permission)
     }, [])
 
-    // useEffect(() => {
-    //     if (cameraPermissionStatus === 'granted' && microphonePermissionStatus === 'granted') navigation.replace('CameraPage')
-    // }, [cameraPermissionStatus, microphonePermissionStatus, navigation])
+    useEffect(() => {
+        if (cameraPermissionStatus === 'granted' && microphonePermissionStatus === 'granted') navigation.replace('CameraPage')
+    }, [cameraPermissionStatus, microphonePermissionStatus, navigation])
 
     return (
         <View style={styles.container}>
             <Image source={BANNER_IMAGE} style={styles.banner} />
             <Text style={styles.welcome}>Welcome to{'\n'}LeggoMyEggo.</Text>
             <View style={styles.permissionsContainer}>
-                {cameraPermissionStatus !== 'granted' && (
+                {cameraPermissionStatus === 'granted' ? <Text style={styles.permissionText}>
+                    {PERMISSIONS_CAMERA}<Text style={styles.bold}>Camera permission</Text>.{' '}
+                    <Text>
+                        {PERMISSIONS_CAMERA}
+                    </Text>
+                </Text> : (
                     <Text style={styles.permissionText}>
                         {NO_PERMISSIONS_CAMERA}<Text style={styles.bold}>Camera permission</Text>.{' '}
                         <Text style={styles.hyperlink} onPress={requestCameraPermission}>

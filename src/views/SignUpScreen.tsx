@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../store';
+import { Camera } from 'react-native-vision-camera';
+import { setCameraPermission, setUser } from '../store';
 import HomeScreen from './HomeScreen';
+import { createUser, getUser, updateUser } from '../services/firebase';
+// import User from '../models/UserModel'
 
 const SignUpScreen = () => {
     const user = useSelector((state) => state.user.user);
@@ -15,11 +18,12 @@ const SignUpScreen = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [hasSignedUp, setHasSignedUp] = useState('')
     const navigation = useNavigation();
-    console.log(`username: ${user?.username}`)
 
-    const handleSignUp = () => {
+    console.log(`uid: ${user?.uid} permissionStatus: ${user.permissionCamera}`)
+
+    const handleSignUp = async () => {
         // TODO: Implement sign-up logic (e.g., with Firebase auth)
-        const userName = 'jane.doe2@example.com'
+        const permissionCamera = await Camera.requestCameraPermission();
 
         auth()
             .createUserWithEmailAndPassword(email, password)
@@ -29,6 +33,7 @@ const SignUpScreen = () => {
                 dispatch(setUser({
                     ...user, username: userName
                 }));
+
                 setHasSignedUp('success')
 
             })
@@ -49,9 +54,29 @@ const SignUpScreen = () => {
         console.log('handleSignUp');
     };
 
+    onClickTest = async () => {
+
+        console.log(`hre inisde onclick test and the user is ${JSON.stringify(user)}`)
+        try {
+            if (user) {
+                const { uid, email, permissionCamera } = user;
+
+                await updateUser(uid, user);
+                // await createUser(user);
+            } else {
+                const newUserId = await createUser(user);
+                console.log('New user ID:', newUserId);
+            }
+            console.log('User data saved successfully!');
+        } catch (error) {
+            console.error('Error saving user data:', error);
+        }
+
+    }
     useEffect(() => {
         if (hasSignedUp === 'success') {
             navigation.navigate('HomeScreen');
+
         }
     }, [hasSignedUp, navigation]);
 
@@ -88,6 +113,13 @@ const SignUpScreen = () => {
                     title="Skip Login"
                     color="#e93766"
                     onPress={() => navigation.navigate('PermissionsPage')}
+                />
+            </View>
+            <View>
+                <Button
+                    title="Test Dispatch"
+                    color="#e93766"
+                    onPress={() => onClickTest()}
                 />
             </View>
         </View>

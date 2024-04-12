@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
+import auth, { getAuth } from '@react-native-firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './AppNavigator';
@@ -16,26 +16,37 @@ import {
   useDispatch,
   useSelector
 } from 'react-redux';
+import { Camera } from 'react-native-vision-camera';
 import { store, setUser } from './store';
 import HomeScreen from './Views/HomeScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignUpScreen from './Views/SignUpScreen';
+
 
 const Stack = createStackNavigator();
 function App() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setLocalUser] = useState();
+  const permissionCamera = Camera.getCameraPermissionStatus();
   const dispatch = useDispatch();
   let initialRouteName = 'HomeScreen';
+
+
   // Handle user state changes
   function onAuthStateChanged(user: any) {
     // console.log(`the user is ${JSON.stringify(user.providerData[0].uid)}`)
-    const { uid } = user.providerData[0]
+    const { uid, email } = getAuth().currentUser
+    console.log(`her is the uid ${uid}`)
+    // console.log(`here is the auth ${JSON.stringify(getAuth().currentUser)}`)
+    console.log(Object.entries(user.providerData));
     console.log(`the user id is ${uid}`)
+    console.log(JSON.stringify(getAuth().currentUser.uid))
     setLocalUser(user);
     dispatch(setUser({
-      username: uid
+      uid,
+      permissionCamera,
+      email,
     }));
     if (initializing) setInitializing(false);
   }

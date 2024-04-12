@@ -6,13 +6,15 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     user: {
-      username: '',
+      uid: '',
+      email: '',
       permissionCamera: false,
       permissionPhotolibrary: false,
     },
   },
   reducers: {
     setUser: (state, action) => {
+      console.log(`imside user and ${JSON.stringify(action.payload)}`);
       state.user = action.payload;
     },
     clearUser: state => {
@@ -20,7 +22,10 @@ const userSlice = createSlice({
     },
     //send true
     setCameraPermission: (state, action) => {
-      state.permissionCamera = action.payload;
+      console.log(
+        `inside setCameraPermission AND ${JSON.stringify(action.payload)}`,
+      );
+      state.user = action.payload;
     },
     clearCameraPermission: state => {
       state.permissionCamera = false;
