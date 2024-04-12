@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 import auth, { getAuth } from '@react-native-firebase/auth';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './AppNavigator';
-import SignUp from './Views/SignUpSCreen';
-import type { Routes } from './Routes';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import {
-  Provider,
-  useDispatch,
-  useSelector
-} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Camera } from 'react-native-vision-camera';
-import { store, setUser } from './store';
-import HomeScreen from './Views/HomeScreen';
 import { createStackNavigator } from '@react-navigation/stack';
-import SignUpScreen from './Views/SignUpScreen';
+import { setUser } from './store';
+import { getUser } from './services/firebase'
 
 
 const Stack = createStackNavigator();
@@ -28,26 +16,31 @@ function App() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setLocalUser] = useState();
+  const [initialRoute, setInitialRoute] = useState('SignUpScreen');
   const permissionCamera = Camera.getCameraPermissionStatus();
   const dispatch = useDispatch();
-  let initialRouteName = 'HomeScreen';
 
 
-  // Handle user state changes
-  function onAuthStateChanged(user: any) {
-    // console.log(`the user is ${JSON.stringify(user.providerData[0].uid)}`)
+
+  /**
+   * onAuthStateChanged: Listener to get Login Details
+   * @param user 
+   * TODO: ADD AN ACTIVITY INDICATOR 
+   */
+  const onAuthStateChanged = async () => {
+
     const { uid, email } = getAuth().currentUser
-    console.log(`her is the uid ${uid}`)
-    // console.log(`here is the auth ${JSON.stringify(getAuth().currentUser)}`)
-    console.log(Object.entries(user.providerData));
-    console.log(`the user id is ${uid}`)
-    console.log(JSON.stringify(getAuth().currentUser.uid))
-    setLocalUser(user);
-    dispatch(setUser({
+
+
+    const u = await getUser(uid)
+    //setLocalUser({ uid, email });
+    await dispatch(setUser({
       uid,
       permissionCamera,
       email,
     }));
+    setInitialRoute('HomeScreen')
+    console.log(`here is u ${JSON.stringify(u)}`)
     if (initializing) setInitializing(false);
   }
 
@@ -55,6 +48,7 @@ function App() {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
+
 
   if (initializing) return null;
 
@@ -66,7 +60,7 @@ function App() {
 
     <NavigationContainer>
       <GestureHandlerRootView style={styles.root}>
-        <AppNavigator initialRouteName={initialRouteName} />
+        <AppNavigator initialRouteName={initialRoute} />
       </GestureHandlerRootView>
     </NavigationContainer>
 

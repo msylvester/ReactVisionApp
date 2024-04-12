@@ -3,10 +3,9 @@
 
  */
 
-import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ImageRequireSource, Linking } from 'react-native'
-import { setUser, setCameraPermission } from './store';
+import { setUser } from './store';
 import { StyleSheet, View, Text, Image } from 'react-native'
 import { Camera, CameraPermissionStatus } from 'react-native-vision-camera'
 import { CONTENT_SPACING, SAFE_AREA_PADDING } from './Constants'
@@ -15,6 +14,7 @@ import type { Routes } from './Routes'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const BANNER_IMAGE = require('./img/phone.png') as ImageRequireSource
+
 const NO_PERMISSIONS_CAMERA = 'LeggoMyEggo needs '
 const NO_PERMISSIONS_PHOTO_LIBRARY = 'LeggoMyEggo needs permision to add images to your library Permission'
 const PERMISSIONS_CAMERA = 'LeggoMyEggo has Camera Permission'

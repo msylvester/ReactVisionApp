@@ -9,7 +9,7 @@ export const createUser = async userData => {
       .doc(uid)
       .set(userData);
     console.log(`here is the userRef ${JSON.stringify(userRef)}`);
-    return userRef.id;
+    // return userRef.id;
   } catch (error) {
     console.error('Error creating user:', error);
     throw error;

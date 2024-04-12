@@ -5,8 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { Camera } from 'react-native-vision-camera';
-import { setCameraPermission, setUser } from '../store';
-import HomeScreen from './HomeScreen';
+import { setUser } from '../store';
 import { createUser, getUser, updateUser } from '../services/firebase';
 // import User from '../models/UserModel'
 
@@ -21,17 +20,18 @@ const SignUpScreen = () => {
 
     console.log(`uid: ${user?.uid} permissionStatus: ${user.permissionCamera}`)
 
+    //TODO: FIX SIGN UP TO ALLOW USERS IN FIRESTORE && FIREBASE AUTH TO COEXIST
     const handleSignUp = async () => {
         // TODO: Implement sign-up logic (e.g., with Firebase auth)
         const permissionCamera = await Camera.requestCameraPermission();
 
         auth()
             .createUserWithEmailAndPassword(email, password)
-            .then(() => {
+            .then((user) => {
                 console.log('User account created & signed in!');
 
                 dispatch(setUser({
-                    ...user, username: userName
+                    ...user,
                 }));
 
                 setHasSignedUp('success')

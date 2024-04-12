@@ -5,15 +5,9 @@
 */
 import 'react-native-gesture-handler';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+
 import { createStackNavigator } from '@react-navigation/stack';
-import { Button, TouchableOpacity, Text } from 'react-native';
-import ProjectScreen from './Views/ProjectScreen';
-import { Camera } from 'react-native-vision-camera';
-import type { Routes } from './Routes';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-//import PermissionsScreen from './Views/PermissionsScreen'
-// import Icon from 'react-native-vector-icons/Ionicons';
+
 import PermissionsPage from './PermissionsPage';
 // Screens
 import HomeScreen from './Views/HomeScreen';
@@ -24,7 +18,7 @@ import SignUpScreen from './Views/SignUpScreen';
 
 const Stack = createStackNavigator();
 
-const AppNavigator = props => {
+const AppNavigator = (props: { initialRouteName: any; }) => {
 
     const { initialRouteName } = props;
     console.log(`here is the initial route name ${initialRouteName}`)
@@ -36,7 +30,7 @@ const AppNavigator = props => {
                 statusBarStyle: 'dark',
                 animationTypeForReplace: 'push',
             }}
-            initialRouteName={'PermissionsScreen'}>
+            initialRouteName={initialRouteName}>
 
             <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
             <Stack.Screen
