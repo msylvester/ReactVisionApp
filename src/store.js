@@ -10,6 +10,7 @@ const userSlice = createSlice({
       email: '',
       permissionCamera: false,
       permissionPhotolibrary: false,
+      projects: [],
     },
   },
   reducers: {
@@ -19,6 +20,9 @@ const userSlice = createSlice({
     },
     clearUser: state => {
       state.user = null;
+    },
+    updateProjects: (state, action) => {
+      console.log(`her eis the state, and action`);
     },
     //send true
     setCameraPermission: (state, action) => {
@@ -33,8 +37,13 @@ const userSlice = createSlice({
   },
 });
 
-export const {setUser, clearUser, setCameraPermission, clearCameraPermission} =
-  userSlice.actions;
+export const {
+  setUser,
+  updateProjects,
+  clearUser,
+  setCameraPermission,
+  clearCameraPermission,
+} = userSlice.actions;
 
 export const selectUser = state => state.user.user;
 

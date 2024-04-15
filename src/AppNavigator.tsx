@@ -11,7 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PermissionsPage from './PermissionsPage';
 // Screens
 import HomeScreen from './Views/HomeScreen';
-
+import ProjectScreen from './Views/ProjectScreen'
 import SignUpScreen from './Views/SignUpScreen';
 // import DetailsScreen from './screens/DetailsScreen';
 // import PermissionsPage from './PermissionsPage';
@@ -43,6 +43,7 @@ const AppNavigator = (props: { initialRouteName: any; }) => {
             />
 
             <Stack.Screen name="PermissionsPage" component={PermissionsPage} />
+            <Stack.Screen name="ProjectScreen" component={ProjectScreen} />
         </Stack.Navigator >
     );
 };

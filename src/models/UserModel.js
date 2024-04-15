@@ -1,6 +1,6 @@
 // UserModel.js
 import ProjectModel from './ProjectModel';
-import AsyncStorage from 'react-native-async-storage/async-storage/';
+// import AsyncStorage from 'react-native-async-storage/async-storage/';
 
 // Example structure for user data model
 

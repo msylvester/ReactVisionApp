@@ -26,9 +26,45 @@ export const getUser = async userId => {
   }
 };
 
-export const updateUser = async (userId, userData) => {
+export const updateUser = async (userId, userData, change, changeType) => {
   try {
-    await firestore().collection('users').doc(userId).update(userData);
+    console.log(
+      `inside update User ${userId} and the data is ${userData} and the change type ${changeType}`,
+    );
+    if (changeType === 'project') {
+      console.log('about to udpate');
+
+      const result = await firestore()
+        .collection('users')
+        .doc(userId)
+        .update({
+          projects: firestore.FieldValue.arrayUnion(change.trim()),
+        });
+      console.log(`finished updating and the result is ${result}`);
+      return;
+    }
+    if (changeType === 'delete') {
+      try {
+        const userRef = firestore().collection('users').doc(userId);
+        const userDoc = await userRef.get();
+
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          const updatedProjects = userData.projects.filter(
+            project => project !== change,
+          );
+
+          await userRef.update({projects: updatedProjects});
+          console.log('Project removed from Firestore successfully.');
+        } else {
+          console.error('User document not found.');
+        }
+      } catch (error) {
+        console.error('Error removing project from Firestore:', error);
+      }
+      return;
+    }
+
     console.log('User updated successfully!');
   } catch (error) {
     console.error('Error updating user:', error);

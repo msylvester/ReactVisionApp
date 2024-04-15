@@ -1,49 +1,18 @@
-/**
- * 
- * @author Mike </Ess>
- */
+import React from 'react';
+import { SafeAreaView, View, FlatList, Dimensions, Platform, Image, StyleSheet, StatusBar } from 'react-native';
 
+const PictureCollection = ({ imageUrls }) => {
+    const screenWidth = Dimensions.get('window').width;
+    const imageWidth = (screenWidth - 20) / 3 - 10; // Subtracting 20 for margins and dividing by 3 for 3 images per row
 
-import React, { useState } from 'react';
-import {
-    View,
-    FlatList,
-    Image,
-    TouchableOpacity,
-    StyleSheet,
-    Text
-} from 'react-native';
-import ImagePicker from "react-native-image-picker";
-import { launchImageLibrary } from 'react-native-image-picker';
-
-const PictureCollection = () => {
-    const [images, setImages] = useState([]);
-
-    const handleImagePicker = () => {
-        ImagePicker.showImagePicker({}, (response) => {
-            if (!response.didCancel) {
-                setImages([...images, response.uri]);
-            }
-        });
-    };
-
-    const renderItem = ({ item }) => (
-        <Image source={{ uri: item }} style={styles.image} />
+    const renderItem = (item, index) => (
+        <Image source={{ uri: item }} key={index} style={[styles.image, { width: imageWidth }]} />
     );
 
     return (
         <View style={styles.container}>
-            {images?.length &&
-                < FlatList
-                    data={images}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
-                    numColumns={3} // Adjust as needed
-                />}
-            <TouchableOpacity onPress={handleImagePicker} style={styles.addButton}>
-                {/* You can put an add button icon or text here */}
-                <Text>Add Image</Text>
-            </TouchableOpacity>
+            {imageUrls.map((item, index) => (renderItem(item, index)))}
+
         </View>
     );
 };
@@ -51,22 +20,67 @@ const PictureCollection = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        marginTop: 20,
+        paddingHorizontal: 5,
     },
     image: {
-        width: 100,
         height: 100,
-        margin: 5,
-    },
-    addButton: {
-        width: 100,
-        height: 50,
-        backgroundColor: 'blue',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 5,
-        marginTop: 10,
+        marginBottom: 10,
     },
 });
 
 export default PictureCollection;
+
+// import React from 'react';
+// import { View, Image, StyleSheet, Dimensions } from 'react-native';
+// import Placeholder from 'react-native-placeholder';
+
+// const PictureCollection = ({ imageUrls }) => {
+//     // Calculate width for each image based on screen width
+//     const screenWidth = Dimensions.get('window').width;
+//     const imageWidth = (screenWidth - 20) / 3 - 10; // Subtracting 20 for margins and dividing by 3 for 3 images per row
+
+//     return (
+//         <View style={styles.container}>
+//             {imageUrls.map((imageUrl, index) => (
+//                 <Placeholder
+//                     key={index}
+//                     Animation={null}
+//                     Left={() => (
+//                         <Image
+//                             source={{ uri: imageUrl }}
+//                             style={[styles.image, { width: imageWidth }]}
+//                         />
+//                     )}
+//                     PlaceholderContent={<Image source={require('../img/phone.png')} style={[styles.image, { width: imageWidth }]} />}
+//                     style={[styles.imageContainer, { width: imageWidth }]}
+//                     onReady={true}
+//                 />
+//             ))}
+//         </View>
+//     );
+// };
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         flexDirection: 'row',
+//         flexWrap: 'wrap',
+//         justifyContent: 'space-between',
+//         marginTop: 20,
+//         paddingHorizontal: 5,
+//     },
+//     imageContainer: {
+//         height: 100,
+//         marginBottom: 10,
+//     },
+//     image: {
+//         flex: 1,
+//         resizeMode: 'cover',
+//     },
+// });
+
+// export default PictureCollection;

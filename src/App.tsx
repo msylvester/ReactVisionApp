@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import auth, { getAuth } from '@react-native-firebase/auth';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './AppNavigator';
@@ -23,23 +23,24 @@ function App() {
 
 
   /**
-   * onAuthStateChanged: Listener to get Login Details
-   * @param user 
-   * TODO: ADD AN ACTIVITY INDICATOR 
+   * onAuthStateChanged: Listener to get Login Details 
    */
   const onAuthStateChanged = async () => {
 
     const { uid, email } = getAuth().currentUser
-
-
+    console.log(`here is the uid ${uid}`)
     const u = await getUser(uid)
+    const { projects } = u;
     //setLocalUser({ uid, email });
+    console.log(`here is the u ${JSON.stringify(u)}`)
     await dispatch(setUser({
       uid,
       permissionCamera,
       email,
+      projects
     }));
     setInitialRoute('HomeScreen')
+
     console.log(`here is u ${JSON.stringify(u)}`)
     if (initializing) setInitializing(false);
   }
@@ -50,11 +51,19 @@ function App() {
   }, []);
 
 
-  if (initializing) return null;
+  if (initializing) return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator color={'blue'} size="large" />
+    </View>
+  );
 
-  if (!user) {
-    initialRouteName = 'SignUpScreen';
-  }
+  // if (!user) {
+  //   return (<NavigationContainer>
+  //     <GestureHandlerRootView style={styles.root}>
+  //       <AppNavigator initialRouteName={'SignUpScreen'} />
+  //     </GestureHandlerRootView>
+  //   </NavigationContainer>)
+  // }
 
   return (
 
