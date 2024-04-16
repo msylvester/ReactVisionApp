@@ -4,8 +4,9 @@ import ImageCollection from '../Components/ImageCollection';
 import TestProject from '../Components/TestProject';
 import AddImage from '../Components/AddImage';
 import { useNavigation } from '@react-navigation/native';
+import DeleteModal from '../Components/DeleteModal';
 
-//Todo: add camera usage to the screen
+//TODO: add touchable opacity to each image and an onclick method that opens a modal
 //
 const ProjectScreen = (props) => {
     console.log(`inside ${JSON.stringify(props)} the project screen`)

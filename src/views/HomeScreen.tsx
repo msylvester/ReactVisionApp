@@ -19,13 +19,13 @@ const HomeScreen = () => {
     const [newProjectName, setNewProjectName] = useState('');
     const [selected, setSelected] = useState(null); // Step 1: Define the state variable
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (selected && selected !== '') {
-            setSelected('')
-            navigation.navigate('ProjectScreen', { uid, projectName: selected });
-        }
-    }, [selected]);
+    //     if (selected && selected !== '') {
+    //         setSelected('')
+    //         navigation.navigate('ProjectScreen', { uid, projectName: selected });
+    //     }
+    // }, [selected]);
     const handleButtonPress = (projectName) => {
         setSelected(prevSelected => prevSelected === projectName ? null : projectName);
         console.log(`her eis the project ${projectName}`)
@@ -135,7 +135,7 @@ const HomeScreen = () => {
                         onPress={() => setAddModal(true)}
                     />
                     <Button title="Delete Selected" onPress={handleDelete} disabled={!selected} />
-                    {/* {selected && <Button title="Go To project" onPress={() => goToProject(selected)} />} */}
+                    {selected && <Button title="Go To project" onPress={() => goToProject(selected)} />}
                     {renderDeleteModal()}
 
                 </View>

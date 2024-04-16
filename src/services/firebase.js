@@ -26,6 +26,48 @@ export const getUser = async userId => {
   }
 };
 
+import storage from '@react-native-firebase/storage';
+
+// Function to delete an individual image from a project in Firebase Storage
+export const deleteImageFromProject = async (uid, projectName, imageName) => {
+  try {
+    // Construct the path to the image in Firebase Storage
+    const imagePath = `${uid}/${projectName}/${imageName}`;
+
+    // Delete the image from Firebase Storage
+    await storage().ref(imagePath).delete();
+
+    console.log(
+      `Image ${imageName} deleted successfully from project ${projectName}.`,
+    );
+  } catch (error) {
+    console.error(
+      `Error deleting image ${imageName} from project ${projectName}:`,
+      error,
+    );
+    // Handle error here (e.g., display error message)
+    throw error;
+  }
+};
+
+export const deleteProject = async (uid, projectID) => {
+  try {
+    // Delete project document from Firestore
+    console.log('here is the project ${projectID}');
+    // const result = await firestore()
+    //   .collection('users')
+    //   .doc(uid)
+    //   .update({
+    //     projects: firestore.FieldValue.arrayUnion(change.trim()),
+    //   });
+    // Once deletion is successful, you can close the modal or perform any other actions
+
+    // Optionally, you can also navigate back or perform any other necessary actions
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    // Handle error here (e.g., display error message)
+  }
+};
 export const updateUser = async (userId, userData, change, changeType) => {
   try {
     console.log(

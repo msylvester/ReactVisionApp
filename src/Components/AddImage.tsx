@@ -29,10 +29,18 @@ const AddImage = ({ selectedCamera, uid, projectName, onPressClose }) => {
   const reference = storage().ref();
   // Function to handle image upload
   // add on firebase     
-
+  const resetImage = async () => {
+    await dispatch(setImageRedux({
+      uri: ''
+    }));
+    testUpload();
+  }
+  useEffect(() => {
+    showImage()
+  }, []);
 
   //TODO: when user opens image picker but does not select image, handle case
-  const testUpload = async () => {
+  const showImage = async () => {
 
     try {
       const options = {
@@ -160,8 +168,9 @@ const AddImage = ({ selectedCamera, uid, projectName, onPressClose }) => {
       ) : (
         <Text>No image selected</Text>
       )}
+      {imageTwo.uri !== '' && <Button title="Choose Different Image" onPress={resetImage} />}
+      {imageTwo.uri !== '' && <Button title="Upload Image" onPress={uploadImage} />}
 
-      <Button title="Upload Image" onPress={testUpload} />
       <Button title="Close" onPress={onPressClose} />
     </View>
   );
