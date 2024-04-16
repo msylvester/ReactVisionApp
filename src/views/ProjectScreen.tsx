@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, Modal, StyleSheet } from 'react-native'; // Import Modal component
 import ImageCollection from '../Components/ImageCollection';
 import TestProject from '../Components/TestProject';
+import AddImage from '../Components/AddImage';
 
 //Todo: add camera usage to the screen
 //
@@ -12,7 +13,7 @@ const ProjectScreen = (props) => {
 
     // State to control the visibility of the modal
     const [modalVisible, setModalVisible] = useState(false);
-
+    const [pickerVisible, setPickerVisible] = useState(false);
     // Function to handle adding an image
     const handleAddImage = () => {
         // Open the modal when the "Add Image" button is pressed
@@ -33,11 +34,11 @@ const ProjectScreen = (props) => {
         console.log('Selecting image from picker...');
         // Close the modal after selection if needed
         setModalVisible(false);
+        setPickerVisible(true);
     };
-
     return (
         <View style={styles.container}>
-            <ImageCollection user={uid} projectName='project_name' />
+            <ImageCollection user={uid} projectName={projectName} />
             {/* <TestProject /> */}
             {/* Button to add image */}
             <Button title="Add Image" onPress={handleAddImage} />
@@ -59,6 +60,7 @@ const ProjectScreen = (props) => {
                     </View>
                 </View>
             </Modal>
+            {pickerVisible && <AddImage uid={uid} projectName={projectName} onPressClose={() => setPickerVisible(false)} />}
         </View>
     );
 };
