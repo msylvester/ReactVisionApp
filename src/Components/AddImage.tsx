@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
-import { setUser } from '../store';
+import Camera, { useCameraDevice } from 'react-native-vision-camera';
+import { setUser, setImageRedux } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
 import Temp from './Temp'
 // Initialize Firebase (Make sure you have already done this)
@@ -16,16 +17,23 @@ import Temp from './Temp'
 //need a reference to the project as well as reference to the user
 
 
-const AddImage = ({ uid, projectName, onPressClose }) => {
+//TODO: change state value for image to a redux value
+
+const AddImage = ({ selectedCamera, uid, projectName, onPressClose }) => {
+  // const device = useCameraDevice('back')
   const [image, setImage] = useState(null);
+  const imageTwo = useSelector((state) => state.user.image);
+  const dispatch = useDispatch();
   //make an api call 
   //on update we want to populate 
   const reference = storage().ref();
   // Function to handle image upload
   // add on firebase     
 
-  //callSelectFromPicker
+
+  //TODO: when user opens image picker but does not select image, handle case
   const testUpload = async () => {
+
     try {
       const options = {
         selectionLimit: 1,
@@ -51,8 +59,11 @@ const AddImage = ({ uid, projectName, onPressClose }) => {
       try {
         // Upload image to Firebase Storage
         const response = await fetch(assets[0]?.uri);
-        const blob = await response.blob();
-        setImage(assets[0]?.uri);
+        //set image on the redux using dispatch
+        await dispatch(setImageRedux({
+          uri: assets[0]?.uri
+        }))
+        setImageRedux(assets[0]?.uri);
         // await imageRef.put(blob);
       } catch (e) {
         console.log(`here is the error ${e}`)
@@ -66,6 +77,7 @@ const AddImage = ({ uid, projectName, onPressClose }) => {
     } catch (error) {
       console.error('Error uploading image:', error);
     }
+
   }
   const uploadImage = async () => {
     try {
@@ -85,9 +97,7 @@ const AddImage = ({ uid, projectName, onPressClose }) => {
 
       const user = 'uid'; // Get user ID from Redux store or props
       const projectName = 'projectName'; // Get project name from props or state
-
       const imagePath = `${uid}/${projectName}/`; // Set the folder path
-
       const imageRef = storage().ref(imagePath); // Reference to the user's project folder
 
       try {
@@ -108,6 +118,7 @@ const AddImage = ({ uid, projectName, onPressClose }) => {
       console.error('Error uploading image:', error);
     }
   };
+
 
   // const uploadImage = async () => {
   //   try {
@@ -144,11 +155,12 @@ const AddImage = ({ uid, projectName, onPressClose }) => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {image ? (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+      {imageTwo.uri ? (
+        <Image source={{ uri: imageTwo.uri }} style={{ width: 200, height: 200 }} />
       ) : (
         <Text>No image selected</Text>
       )}
+
       <Button title="Upload Image" onPress={testUpload} />
       <Button title="Close" onPress={onPressClose} />
     </View>

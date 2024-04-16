@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Modal, StyleSheet } from 'react-native'; // Import Modal component
 import ImageCollection from '../Components/ImageCollection';
 import TestProject from '../Components/TestProject';
 import AddImage from '../Components/AddImage';
+import { useNavigation } from '@react-navigation/native';
 
 //Todo: add camera usage to the screen
 //
@@ -14,6 +15,18 @@ const ProjectScreen = (props) => {
     // State to control the visibility of the modal
     const [modalVisible, setModalVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
+    const [selectedCamera, setSelectedCamera] = useState(false);
+    const navigation = useNavigation();
+
+    //navigate to the camera screen if user selects Camera
+    useEffect(() => {
+
+        if (selectedCamera) {
+            setSelectedCamera('')
+            navigation.navigate('CameraScreen');
+        }
+    }, [selectedCamera]);
+
     // Function to handle adding an image
     const handleAddImage = () => {
         // Open the modal when the "Add Image" button is pressed
@@ -25,7 +38,9 @@ const ProjectScreen = (props) => {
         // Add logic here to open camera
         console.log('Selecting image from camera...');
         // Close the modal after selection if needed
+        setSelectedCamera(!selectedCamera);
         setModalVisible(false);
+        setPickerVisible(true);
     };
 
     // Function to handle selecting an image from image picker
@@ -41,7 +56,7 @@ const ProjectScreen = (props) => {
             <ImageCollection user={uid} projectName={projectName} />
             {/* <TestProject /> */}
             {/* Button to add image */}
-            <Button title="Add Image" onPress={handleAddImage} />
+            {!pickerVisible && <Button title="Add Image" onPress={handleAddImage} />}
             {/* Modal for selecting image source */}
             <Modal
                 animationType="slide"
@@ -60,7 +75,11 @@ const ProjectScreen = (props) => {
                     </View>
                 </View>
             </Modal>
-            {pickerVisible && <AddImage uid={uid} projectName={projectName} onPressClose={() => setPickerVisible(false)} />}
+            {pickerVisible && <AddImage
+                selectedCamera={selectedCamera}
+                uid={uid}
+                projectName={projectName}
+                onPressClose={() => setPickerVisible(false)} />}
         </View>
     );
 };
