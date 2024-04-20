@@ -17,7 +17,7 @@ const ImageCollection = ({ user, projectName }) => {
     const fetchLocalImageData = () => {
         // Assuming images are named in a specific pattern, like 'image1.png', 'image2.png', etc.
         const images = [
-            require(`../img/Camera.png`),
+            require(`../img/block.png`),
             require(`../img/phone.png`),
             // Add more images as needed
         ];

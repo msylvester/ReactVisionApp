@@ -1,5 +1,10 @@
 import React from 'react';
-import { SafeAreaView, View, FlatList, Dimensions, Platform, Image, StyleSheet, StatusBar } from 'react-native';
+import {
+    View,
+    Dimensions,
+    Image,
+    StyleSheet
+} from 'react-native';
 
 const PictureCollection = ({ imageUrls }) => {
     const screenWidth = Dimensions.get('window').width;

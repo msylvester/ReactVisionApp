@@ -29,11 +29,8 @@ const SignUpScreen = () => {
             .createUserWithEmailAndPassword(email, password)
             .then((user) => {
                 console.log('User account created & signed in!');
-
-                dispatch(setUser({
-                    ...user,
-                }));
-
+                //create user in firebase
+                //we want to add  projects 
                 setHasSignedUp('success')
 
             })

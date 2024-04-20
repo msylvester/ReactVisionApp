@@ -1,14 +1,14 @@
 import firestore from '@react-native-firebase/firestore';
-
+import User from '../models/UserModel';
 export const createUser = async userData => {
-  const {uid} = userData;
-  console.log(`inside create user and (uid) ${uid}`);
+  const {uid, email} = userData;
+  let user = new User(uid, email);
+  console.log(`here is user ${user}`);
+  //we need the user model
   try {
-    const userRef = await firestore()
-      .collection('users')
-      .doc(uid)
-      .set(userData);
-    console.log(`here is the userRef ${JSON.stringify(userRef)}`);
+    const userRef = await firestore().collection('users').doc(uid).set(user);
+    console.log(`here is the userRef ${JSON.stringify(user)}`);
+    return user;
     // return userRef.id;
   } catch (error) {
     console.error('Error creating user:', error);

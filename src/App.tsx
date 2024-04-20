@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Camera } from 'react-native-vision-camera';
 import { createStackNavigator } from '@react-navigation/stack';
 import { setUser } from './store';
-import { getUser } from './services/firebase'
+import { getUser, createUser } from './services/firebase'
 
 
 const Stack = createStackNavigator();
@@ -26,22 +26,46 @@ function App() {
    * onAuthStateChanged: Listener to get Login Details 
    */
   const onAuthStateChanged = async () => {
+    try {
+      console.log(`here we go`)
+      //user is logged in so lets get the value from the db
+      console.log(`here is the current user ${getAuth().currentUser}`)
+      const { uid, email } = getAuth().currentUser
+      console.log(`here is the info about hte current user ${uid} and email: ${email}`)
 
-    const { uid, email } = getAuth().currentUser
-    console.log(`here is the uid ${uid}`)
-    const u = await getUser(uid)
-    const { projects } = u;
-    //setLocalUser({ uid, email });
-    console.log(`here is the u ${JSON.stringify(u)}`)
-    await dispatch(setUser({
-      uid,
-      permissionCamera,
-      email,
-      projects
-    }));
-    setInitialRoute('HomeScreen')
+      //now lets see if a DB entry exists for the user 
+      const u = await getUser(uid)
+      //if u doesnt exist then create one
+      console.log(`here is u ${u}`)
+      if (!u) {
+        //create user 
+        const newUser = await createUser({ uid, email })
+        console.log(`here is new User ${JSON.stringify(newUser)}`)
+        await dispatch(setUser({
+          uid,
+          permissionCamera: false,
+          email,
+          projects: newUser.getProjects()
+        }));
+        setInitialRoute('HomeScreen')
+      } else {
+        const { projects } = u;
+        //setLocalUser({ uid, email });
+        console.log(`here is the u ${JSON.stringify(u)}`)
+        await dispatch(setUser({
+          uid,
+          permissionCamera,
+          email,
+          projects
+        }));
+        setInitialRoute('HomeScreen')
 
-    console.log(`here is u ${JSON.stringify(u)}`)
+        console.log(`here is u ${JSON.stringify(u)}`)
+      }
+    } catch (e) {
+      setInitialRoute('SignUpScreen')
+      console.log(`here is teh e ${e}`)
+    }
     if (initializing) setInitializing(false);
   }
 

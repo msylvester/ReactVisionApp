@@ -1,68 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, FlatList, TouchableOpacity, Text, StyleSheet, Modal, Button, TextInput } from 'react-native';
+import { Animated, Easing } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
 import { updateUser } from '../services/firebase';
-import { create } from 'react-test-renderer';
-import { setUser, updateProjects } from '../store'
-import DeleteModal from '../Components/DeleteModal'
-//TODO: update redux
+import { setUser, updateProjects } from '../store';
+import DeleteModal from '../Components/DeleteModal';
+import ProjectButtons from '../Components/ProjectButtons';
 
 const HomeScreen = () => {
     const user = useSelector((state) => state.user.user);
     const { uid, projects, email, permissionCamera } = user;
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const [userUpdate, setUserUpdate] = useState(false)
+
     const [modalVisible, setModalVisible] = useState(false);
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     const [newProjectName, setNewProjectName] = useState('');
-    const [selected, setSelected] = useState(null); // Step 1: Define the state variable
+    const [selected, setSelected] = useState(null);
+    const [isDeleteActive, setIsDeleteActive] = useState(false);
+    const [buttonVibrations, setButtonVibrations] = useState(Array(projects.length).fill(false));
 
-    // useEffect(() => {
-
-    //     if (selected && selected !== '') {
-    //         setSelected('')
-    //         navigation.navigate('ProjectScreen', { uid, projectName: selected });
-    //     }
-    // }, [selected]);
-    const handleButtonPress = (projectName) => {
-        setSelected(prevSelected => prevSelected === projectName ? null : projectName);
-        console.log(`her eis the project ${projectName}`)
-        //setSelected(project);
-        // navigation.navigate('ProjectScreen', { uid, projectName });
+    const handleButtonPress = (index, projectName) => {
+        if (isDeleteActive) {
+            const newButtonVibrations = [...buttonVibrations];
+            newButtonVibrations[index] = !newButtonVibrations[index];
+            setButtonVibrations(newButtonVibrations);
+        } else {
+            setSelected(prevSelected => prevSelected === projectName ? null : projectName);
+        }
     };
-    const goToProject = (projectName) => {
-        navigation.navigate('ProjectScreen', { uid, projectName });
-    }
+
     const handleDelete = () => {
-        setDeleteModalVisible(true);
-        // Update Firestore with the new project name
-
+        setIsDeleteActive(prev => !prev); // Toggle delete button state
     };
-    const addButton = () => {
-        return (
-            <Button
-                title="Add New Project"
-                onPress={() => setModalVisible(true)}
-            />
-        );
-    }
-    const setAddModal = () => {
-        setModalVisible(true)
-    }
-    const setDeleteModal = () => {
-        console.log(`here is the deletemodal ${deleteModalVisible}`)
-        setDeleteModalVisible(false)
-    }
 
     const confirmDelete = async () => {
-        console.log(`confirmDelete ${selected}`)
         // Update Firestore with the new project name
         await updateUser(uid, user, selected, 'delete')
-
         const updatedProjects = projects.filter(item => item !== selected);
-        console.log(`here is the updated Project ${updatedProjects}`)
         await dispatch(setUser({
             uid,
             permissionCamera,
@@ -70,37 +47,23 @@ const HomeScreen = () => {
             projects: updatedProjects,
         }))
         setDeleteModalVisible(false);
+        setIsDeleteActive(false); // Reset delete button state
+        setButtonVibrations(Array(projects.length).fill(false)); // Reset button vibrations
     }
-    const renderDeleteModal = () => {
-        return (<DeleteModal
-            confirmDelete={confirmDelete}
-            setDeleteModal={setDeleteModal}
-            deleteModalVisible={deleteModalVisible}
-            setDeleteModalVisible={setModalVisible}
-        />
-        );
-    };
 
     const createNewProject = async () => {
-        console.log(`creating a new project`)
         if (newProjectName.trim() !== '') {
             try {
                 // Update Firestore with the new project name
                 await updateUser(uid, user, newProjectName, 'project')
-
                 const updatedProjects = [...projects, newProjectName.trim()];
-
                 await dispatch(setUser({
                     uid,
                     permissionCamera,
                     email,
                     projects: updatedProjects,
                 }))
-
-
                 setModalVisible(false);
-
-                setUserUpdate(true);
                 setNewProjectName('');
             } catch (error) {
                 console.error('Error updating document: ', error);
@@ -108,52 +71,45 @@ const HomeScreen = () => {
         }
     }
 
-    const renderProjectButton = () => {
-        if (projects.length === 0) {
-            addButton();
-        } else {
-            return (
-                <View>
-                    <FlatList
-                        data={projects}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={[
-                                    styles.button,
-                                    selected === item && styles.selectedButton
-                                ]}
-                                onPress={() => handleButtonPress(item)}
-                            >
-                                <Text style={styles.buttonText}>{item}</Text>
-                            </TouchableOpacity>
-                        )}
-                        keyExtractor={(item) => item}
-                        numColumns={2}
-                    />
-                    <Button
-                        title="Add New Project"
-                        onPress={() => setAddModal(true)}
-                    />
-                    <Button title="Delete Selected" onPress={handleDelete} disabled={!selected} />
-                    {selected && <Button title="Go To project" onPress={() => goToProject(selected)} />}
-                    {renderDeleteModal()}
-
-                </View>
-            );
-        }
-    };
-
     return (
         <View style={styles.container}>
-            {renderProjectButton()}
-
+            <View style={styles.projectButtonsContainer}>
+                <ProjectButtons
+                    selected={selected}
+                    projects={projects}
+                    buttonVibrations={buttonVibrations}
+                    handleButtonPress={handleButtonPress}
+                    deleteSelect={isDeleteActive} // Pass deleteSelect as isDeleteActive
+                />
+                <DeleteModal
+                    confirmDelete={confirmDelete}
+                    deleteModalVisible={deleteModalVisible}
+                    setDeleteModalVisible={setDeleteModalVisible}
+                />
+            </View>
+            <View style={styles.bottomButtonsContainer}>
+                <Button
+                    title="New Project"
+                    onPress={() => setModalVisible(true)}
+                    color="#ff0000" // Red button color
+                />
+                <Button
+                    title="Delete"
+                    onPress={handleDelete}
+                    color={isDeleteActive ? "#ff0000" : "#999999"} // Change color based on delete button state
+                />
+                <Button
+                    title="Go To project"
+                    onPress={() => navigation.navigate('ProjectScreen', { uid, projectName: selected })}
+                    disabled={!selected}
+                    color="#ff0000"
+                />
+            </View>
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(false);
-                }}
+                onRequestClose={() => setModalVisible(false)}
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -166,7 +122,6 @@ const HomeScreen = () => {
                         />
                         <Button title="Create New Project" onPress={() => createNewProject()} />
                         <Button title="Close Modal" onPress={() => setModalVisible(false)} />
-
                     </View>
                 </View>
             </Modal>
@@ -177,31 +132,17 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#ffffe0',
         paddingHorizontal: 20,
         paddingTop: 40,
     },
-    button: {
-        backgroundColor: '#3498db',
-        padding: 20,
-        margin: 10,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    buttonText: {
-        fontSize: 18,
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    selectedButton: {
-        backgroundColor: '#2ecc71',
-    },
-    centeredView: {
+    projectButtonsContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
+    },
+    bottomButtonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 20,
     },
     modalView: {
         margin: 20,
@@ -218,11 +159,14 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
-    modalButton: {
-        backgroundColor: '#3498db',
+    input: {
+        height: 40,
+        width: '100%',
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#ccc',
         padding: 10,
-        marginVertical: 5,
-        borderRadius: 5,
+        color: '#ff0000',
     },
 });
 

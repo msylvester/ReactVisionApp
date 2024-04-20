@@ -1,7 +1,7 @@
 // store.js
 
 import {configureStore, createSlice} from '@reduxjs/toolkit';
-
+//create an image atribute
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -12,14 +12,24 @@ const userSlice = createSlice({
       permissionPhotolibrary: false,
       projects: [],
     },
+    image: {
+      uri: '',
+    },
   },
   reducers: {
     setUser: (state, action) => {
       console.log(`imside user and ${JSON.stringify(action.payload)}`);
       state.user = action.payload;
     },
+    setImageRedux: (state, action) => {
+      console.log(`inside set image ${JSON.stringify(action.payload)}`);
+      state.image = action.payload;
+    },
     clearUser: state => {
       state.user = null;
+    },
+    updateProjects: (state, action) => {
+      console.log(`her eis the state, and action`);
     },
     //send true
     setCameraPermission: (state, action) => {
@@ -34,8 +44,14 @@ const userSlice = createSlice({
   },
 });
 
-export const {setUser, clearUser, setCameraPermission, clearCameraPermission} =
-  userSlice.actions;
+export const {
+  setUser,
+  updateProjects,
+  clearUser,
+  setCameraPermission,
+  clearCameraPermission,
+  setImageRedux,
+} = userSlice.actions;
 
 export const selectUser = state => state.user.user;
 

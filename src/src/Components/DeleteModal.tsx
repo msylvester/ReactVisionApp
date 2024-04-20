@@ -10,7 +10,7 @@ const DeleteModal = ({ setDeleteModal, confirmDelete, selected, deleteModalVisib
         animationType="slide"
         transparent={true}
         visible={deleteModalVisible}
-        onRequestClose={() => deleteModalVisible(false)}
+        onRequestClose={() => setDeleteModalVisible(false)}
     >
         <View style={styles.centeredView}>
             <View style={styles.modalView}>

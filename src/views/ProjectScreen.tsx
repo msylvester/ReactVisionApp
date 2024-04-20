@@ -57,7 +57,8 @@ const ProjectScreen = (props) => {
             <ImageCollection user={uid} projectName={projectName} />
             {/* <TestProject /> */}
             {/* Button to add image */}
-            {!pickerVisible && <Button title="Add Image" onPress={handleAddImage} />}
+            {!pickerVisible && <Button title="Select Block" onPress={handleAddImage} />}
+            {!pickerVisible && <Button title="make some cool stuff" onPress={handleAddImage} />}
             {/* Modal for selecting image source */}
             <Modal
                 animationType="slide"
@@ -71,7 +72,7 @@ const ProjectScreen = (props) => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Button title="Select from Camera" onPress={handleSelectFromCamera} />
-                        <Button title="Select from Image Picker" onPress={handleSelectFromPicker} />
+                        <Button title="Pick block from list" onPress={handleSelectFromPicker} />
                         <Button title="Close" onPress={() => setModalVisible(false)} />
                     </View>
                 </View>

@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, FlatList, TouchableOpacity, Text, StyleSheet, Modal, Button, TextInput } from 'react-native';
+import { Animated, Easing } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
 import { updateUser } from '../services/firebase';
 import { create } from 'react-test-renderer';
-import { setUser, updateProjects } from '../store'
-import DeleteModal from '../Components/DeleteModal'
+import { setUser, updateProjects } from '../store';
+import DeleteModal from '../Components/DeleteModal';
+import ProjectButtons from '../Components/ProjectButtons';
+
 //TODO: update redux
 const HomeScreen = () => {
+
     const user = useSelector((state) => state.user.user);
     const { uid, projects, email, permissionCamera } = user;
     const dispatch = useDispatch();
@@ -17,12 +22,16 @@ const HomeScreen = () => {
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     const [newProjectName, setNewProjectName] = useState('');
     const [selected, setSelected] = useState(null); // Step 1: Define the state variable
+    const [shake, setShake] = useState(false)
+
     // useEffect(() => {
     //     if (selected && selected !== '') {
     //         setSelected('')
     //         navigation.navigate('ProjectScreen', { uid, projectName: selected });
     //     }
     // }, [selected]);
+
+
     const handleButtonPress = (projectName) => {
         setSelected(prevSelected => prevSelected === projectName ? null : projectName);
         console.log(`her eis the project ${projectName}`)
@@ -33,8 +42,11 @@ const HomeScreen = () => {
         navigation.navigate('ProjectScreen', { uid, projectName });
     }
     const handleDelete = () => {
-        setDeleteModalVisible(true);
+        //  setDeleteModalVisible(true);
         // Update Firestore with the new project name
+        // setDeleteModalVisible(true);
+        console.log(`here is the `)
+        setShake(true);
     };
     const addButton = () => {
         return (
@@ -97,33 +109,23 @@ const HomeScreen = () => {
         }
     }
     const renderProjectButton = () => {
+        console.log(`the shake value is correctl ${shake}`)
         if (projects.length === 0) {
             addButton();
         } else {
             return (
                 <View style={styles.projectButtonsContainer}>
-                    <FlatList
-                        data={projects}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={[
-                                    styles.button,
-                                    selected === item && styles.selectedButton
-                                ]}
-                                onPress={() => handleButtonPress(item)}
-                            >
-                                <Text style={styles.buttonText}>{item}</Text>
-                            </TouchableOpacity>
-                        )}
-                        keyExtractor={(item) => item}
-                        numColumns={2}
-                    />
-                    {/* <Button
-                        title="Add New Project"
-                        onPress={() => setAddModal(true)}
-                    /> */}
-                    {/* <Button title="Delete Selected" onPress={handleDelete} disabled={!selected} />
-                    {selected && <Button title="Go To project" onPress={() => goToProject(selected)} />} */}
+                    {shake ? <ProjectButtons
+                        selected={selected}
+                        projects={projects}
+                        handleButtonPress={handleButtonPress} deleteSelect={true} /> :
+                        <ProjectButtons
+                            selected={selected}
+                            projects={projects}
+                            handleButtonPress={handleButtonPress}
+
+                        />
+                    }
                     {renderDeleteModal()}
                 </View>
             );
@@ -142,7 +144,7 @@ const HomeScreen = () => {
                 <Button
                     title="Delete"
                     onPress={handleDelete}
-                    disabled={!selected} s
+                    // disabled={!selected} 
                     color="#ff0000" // Red button color
                 />
                 <Button title="Go To project" onPress={() => goToProject(selected)} disabled={!selected} color="#ff0000" />
