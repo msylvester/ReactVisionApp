@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Button, Modal, TextInput, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { updateUser } from '../services/firebase';
-import { setUser } from '../store';
+import { setUser, setProjectName } from '../store';
 import ProjectButtons from '../Components/ProjectButtons';
 import DeleteModal from '../Components/DeleteModal';
 import homeScreenStyles from '../styles/homeScreenStyles'; // Import styles from separate file
 
 const HomeScreen = () => {
+    //GET USER and project
     const user = useSelector((state) => state.user.user);
+    const project = useSelector((state) => state.user.project)
     const { uid, projects, email, permissionCamera } = user;
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -20,8 +22,13 @@ const HomeScreen = () => {
     const [selected, setSelected] = useState(null);
     const [isDeleteActive, setIsDeleteActive] = useState(false);
     const [buttonVibrations, setButtonVibrations] = useState(Array(projects.length).fill(false));
+    const projectRef = useRef(null);
 
-    const handleButtonPress = (index, projectName) => {
+    useEffect(() => {
+        projectRef.current = project;
+        console.log('Updated project:', projectRef.current);
+    }, [project]);
+    const handleButtonPress = async (index, projectName) => {
         if (isDeleteActive) {
             const newButtonVibrations = [...buttonVibrations];
             newButtonVibrations[index] = !newButtonVibrations[index];
@@ -32,6 +39,12 @@ const HomeScreen = () => {
             const tempSelected = selected;
             setSelected(prevSelected => prevSelected === projectName ? null : projectName);
             if (selected && !isDeleteActive) {
+                await dispatch(setProjectName({
+                    blocks: [],
+                    name: selected
+                }))
+                console.log(`ere isteh project ${JSON.stringify(project)}`)
+
                 navigation.navigate('ProjectScreen', { uid, projectName: selected });
             }
         }

@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import DeleteModal from '../Components/DeleteModal';
 import { getProjects } from '../services/firebase';
 import LocalImages from '../Components/LocalImages';
+import { useDispatch } from 'react-redux';
 const ProjectScreen = (props) => {
     const { params: { uid, projectName } } = props.route;
     const navigation = useNavigation();
@@ -15,11 +16,12 @@ const ProjectScreen = (props) => {
     const [pickerVisible, setPickerVisible] = useState(false);
     const [selectedCamera, setSelectedCamera] = useState(false);
     const [projectImages, setProjectImages] = useState([]);
-
+    const dispatch = useDispatch()
     //populate redux too
     useEffect(() => {
         // Fetch images for the project before component mounts
         fetchProjectImages();
+
     }, []);
 
     const fetchProjectImages = async () => {
@@ -45,7 +47,12 @@ const ProjectScreen = (props) => {
 
 
     // }
-    const handleNavigateToBlocks = () => {
+    const handleNavigateToBlocks = async () => {
+        try {
+            await dispatch(setProjectName(selectedImage));
+        } catch (e) {
+            console.log(`here is the error ${e}`)
+        }
         navigation.navigate('LeggoScreen', { uid, projectName });
     }
 
@@ -67,7 +74,8 @@ const ProjectScreen = (props) => {
     return (
         <View style={styles.container}>
             {/* <ImageCollection images={projectImages} />  */}
-            <LocalImages imagesData={projectImages} />
+            {/* <LocalImages imagesData={projectImages} /> */}
+            {projectImages.length > 0 && <LocalImages imagesData={projectImages} />}
             <Button title="Select Block" onPress={handleNavigateToBlocks} />
             <Button title="make some cool stuff" onPress={handleAddImage} />
             {/* <Modal

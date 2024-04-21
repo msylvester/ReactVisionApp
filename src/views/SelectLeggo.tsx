@@ -17,27 +17,14 @@ import blueImage from '../img/blue_2x2.png';
 import blackImage from '../img/black_2x2.png';
 import greenImage from '../img/green_2x2.png';
 import greyImage from '../img/grey_2x2.png';
-
+import { imageFilenames, imagePaths } from '../filenameConsants';
 const LeggoScreen = ({ uid, projectName }) => {
     // Specify image filenames manually
-    const imageFilenames = [
-        'red_2x2.png',
-        'blue_2x2.png',
-        'black_2x2.png',
-        'green_2x2.png',
-        'grey_2x2.png',
-    ];
 
     const dispatch = useDispatch()
 
     // Construct image paths from imported images
-    const imagePaths = [
-        redImage,
-        blueImage,
-        blackImage,
-        greenImage,
-        greyImage,
-    ];
+
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
