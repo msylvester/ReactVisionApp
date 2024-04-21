@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { View, Button, Modal, TextInput, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, FlatList, TouchableOpacity, Text, StyleSheet, Modal, Button, TextInput } from 'react-native';
-import { Animated, Easing } from 'react-native';
-
 import { useNavigation } from '@react-navigation/native';
 import { updateUser } from '../services/firebase';
-import { setUser, updateProjects } from '../store';
-import DeleteModal from '../Components/DeleteModal';
+import { setUser } from '../store';
 import ProjectButtons from '../Components/ProjectButtons';
+import DeleteModal from '../Components/DeleteModal';
+import homeScreenStyles from '../styles/homeScreenStyles'; // Import styles from separate file
 
 const HomeScreen = () => {
     const user = useSelector((state) => state.user.user);
@@ -28,7 +27,13 @@ const HomeScreen = () => {
             newButtonVibrations[index] = !newButtonVibrations[index];
             setButtonVibrations(newButtonVibrations);
         } else {
+            console.log(`here is the selected ${selected}`)
+
+            const tempSelected = selected;
             setSelected(prevSelected => prevSelected === projectName ? null : projectName);
+            if (selected && !isDeleteActive) {
+                navigation.navigate('ProjectScreen', { uid, projectName: selected });
+            }
         }
     };
 
@@ -37,43 +42,31 @@ const HomeScreen = () => {
     };
 
     const confirmDelete = async () => {
-        // Update Firestore with the new project name
-        await updateUser(uid, user, selected, 'delete')
+        await updateUser(uid, user, selected, 'delete');
         const updatedProjects = projects.filter(item => item !== selected);
-        await dispatch(setUser({
-            uid,
-            permissionCamera,
-            email,
-            projects: updatedProjects,
-        }))
+        await dispatch(setUser({ uid, permissionCamera, email, projects: updatedProjects }));
         setDeleteModalVisible(false);
         setIsDeleteActive(false); // Reset delete button state
         setButtonVibrations(Array(projects.length).fill(false)); // Reset button vibrations
-    }
+    };
 
     const createNewProject = async () => {
         if (newProjectName.trim() !== '') {
             try {
-                // Update Firestore with the new project name
-                await updateUser(uid, user, newProjectName, 'project')
+                await updateUser(uid, user, newProjectName, 'project');
                 const updatedProjects = [...projects, newProjectName.trim()];
-                await dispatch(setUser({
-                    uid,
-                    permissionCamera,
-                    email,
-                    projects: updatedProjects,
-                }))
+                await dispatch(setUser({ uid, permissionCamera, email, projects: updatedProjects }));
                 setModalVisible(false);
                 setNewProjectName('');
             } catch (error) {
                 console.error('Error updating document: ', error);
             }
         }
-    }
+    };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.projectButtonsContainer}>
+        <View style={homeScreenStyles.container}>
+            <View style={homeScreenStyles.projectButtonsContainer}>
                 <ProjectButtons
                     selected={selected}
                     projects={projects}
@@ -87,7 +80,7 @@ const HomeScreen = () => {
                     setDeleteModalVisible={setDeleteModalVisible}
                 />
             </View>
-            <View style={styles.bottomButtonsContainer}>
+            <View style={homeScreenStyles.bottomButtonsContainer}>
                 <Button
                     title="New Project"
                     onPress={() => setModalVisible(true)}
@@ -98,12 +91,16 @@ const HomeScreen = () => {
                     onPress={handleDelete}
                     color={isDeleteActive ? "#ff0000" : "#999999"} // Change color based on delete button state
                 />
-                <Button
+                {/* <Button
                     title="Go To project"
-                    onPress={() => navigation.navigate('ProjectScreen', { uid, projectName: selected })}
-                    disabled={!selected}
+                    onPress={() => {
+                        if (selected && !isDeleteActive) {
+                            navigation.navigate('ProjectScreen', { uid, projectName: selected });
+                        }
+                    }}
+                    disabled={!selected || isDeleteActive} // Disable button if no project is selected or delete mode is active
                     color="#ff0000"
-                />
+                /> */}
             </View>
             <Modal
                 animationType="slide"
@@ -111,11 +108,11 @@ const HomeScreen = () => {
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
             >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
+                <View style={homeScreenStyles.centeredView}>
+                    <View style={homeScreenStyles.modalView}>
                         <Text>Add New Project</Text>
                         <TextInput
-                            style={styles.input}
+                            style={homeScreenStyles.input}
                             onChangeText={setNewProjectName}
                             value={newProjectName}
                             placeholder="Enter Project Name"
@@ -128,46 +125,5 @@ const HomeScreen = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#ffffe0',
-        paddingHorizontal: 20,
-        paddingTop: 40,
-    },
-    projectButtonsContainer: {
-        flex: 1,
-    },
-    bottomButtonsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: 20,
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-    input: {
-        height: 40,
-        width: '100%',
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        color: '#ff0000',
-    },
-});
 
 export default HomeScreen;
