@@ -11,13 +11,14 @@ import DeleteModal from '../Components/DeleteModal';
 const ProjectScreen = (props) => {
     console.log(`inside ${JSON.stringify(props)} the project screen`)
     const { params: { uid, projectName } } = props.route;
+    const navigation = useNavigation();
     console.log(`the params equal ${JSON.stringify(uid)} and projectName ${projectName}`)
 
     // State to control the visibility of the modal
     const [modalVisible, setModalVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
     const [selectedCamera, setSelectedCamera] = useState(false);
-    const navigation = useNavigation();
+
 
     //navigate to the camera screen if user selects Camera
     useEffect(() => {
@@ -27,6 +28,11 @@ const ProjectScreen = (props) => {
             navigation.navigate('CameraScreen');
         }
     }, [selectedCamera]);
+
+    //write a test function to navigate to block  page
+    const handleNavigateToBlocks = () => {
+        navigation.navigate('LeggoScreen', { uid, projectName });
+    }
 
     // Function to handle adding an image
     const handleAddImage = () => {
@@ -57,7 +63,8 @@ const ProjectScreen = (props) => {
             <ImageCollection user={uid} projectName={projectName} />
             {/* <TestProject /> */}
             {/* Button to add image */}
-            {!pickerVisible && <Button title="Select Block" onPress={handleAddImage} />}
+            {/* {!pickerVisible && <Button title="Select Block" onPress={handleAddImage} />} */}
+            {!pickerVisible && <Button title="Select Block" onPress={handleNavigateToBlocks} />}
             {!pickerVisible && <Button title="make some cool stuff" onPress={handleAddImage} />}
             {/* Modal for selecting image source */}
             <Modal

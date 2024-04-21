@@ -12,6 +12,10 @@ const userSlice = createSlice({
       permissionPhotolibrary: false,
       projects: [],
     },
+    project: {
+      name: '',
+      images: [],
+    },
     image: {
       uri: '',
     },
@@ -29,7 +33,11 @@ const userSlice = createSlice({
       state.user = null;
     },
     updateProjects: (state, action) => {
-      console.log(`her eis the state, and action`);
+      console.log(
+        `her eis the state ${JSON.stringify(
+          state,
+        )}, and action ${JSON.stringify(action)}`,
+      );
     },
     //send true
     setCameraPermission: (state, action) => {
@@ -54,7 +62,8 @@ export const {
 } = userSlice.actions;
 
 export const selectUser = state => state.user.user;
-
+export const selectImage = state => state.user.image;
+export const selectProject = state => state.user.project;
 export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
