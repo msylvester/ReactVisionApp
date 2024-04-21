@@ -14,7 +14,7 @@ const userSlice = createSlice({
     },
     project: {
       name: '',
-      images: [],
+      blocks: [],
     },
     image: {
       uri: '',
@@ -32,12 +32,18 @@ const userSlice = createSlice({
     clearUser: state => {
       state.user = null;
     },
-    updateProjects: (state, action) => {
+    updateBlocks: (state, action) => {
+      let {
+        project: {blocks},
+      } = state;
+      const {payload} = action;
+      blocks.push(payload);
       console.log(
         `her eis the state ${JSON.stringify(
-          state,
+          blocks,
         )}, and action ${JSON.stringify(action)}`,
       );
+      state.project.blocks = blocks;
     },
     //send true
     setCameraPermission: (state, action) => {
@@ -59,6 +65,7 @@ export const {
   setCameraPermission,
   clearCameraPermission,
   setImageRedux,
+  updateBlocks,
 } = userSlice.actions;
 
 export const selectUser = state => state.user.user;

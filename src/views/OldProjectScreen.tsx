@@ -1,80 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Modal, StyleSheet } from 'react-native';
+import { View, Text, Button, Modal, StyleSheet } from 'react-native'; // Import Modal component
 import ImageCollection from '../Components/ImageCollection';
 import TestProject from '../Components/TestProject';
 import AddImage from '../Components/AddImage';
 import { useNavigation } from '@react-navigation/native';
 import DeleteModal from '../Components/DeleteModal';
-import { getProjects } from '../services/firebase';
-import LocalImages from '../Components/LocalImages';
+
+//TODO: add touchable opacity to each image and an onclick method that opens a modal
+//
 const ProjectScreen = (props) => {
+    console.log(`inside ${JSON.stringify(props)} the project screen`)
     const { params: { uid, projectName } } = props.route;
     const navigation = useNavigation();
+    console.log(`the params equal ${JSON.stringify(uid)} and projectName ${projectName}`)
 
+    // State to control the visibility of the modal
     const [modalVisible, setModalVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
     const [selectedCamera, setSelectedCamera] = useState(false);
-    const [projectImages, setProjectImages] = useState([]);
 
-    //populate redux too
+
+    //navigate to the camera screen if user selects Camera
     useEffect(() => {
-        // Fetch images for the project before component mounts
-        fetchProjectImages();
-    }, []);
 
-    const fetchProjectImages = async () => {
-        try {
-            // Make a get to firebase to get the images for a given project
-            const response = await getProjects(projectName)
-            console.log(`here is the response ${JSON.stringify(response)}`)
-            if (response) {
-                // const data = await response.json();
-                const { blocks } = response
-                console.log(`here is blocks ${blocks.length}`)
-                setProjectImages(blocks); // Assuming your API response contains an array of images
-            } else {
-                console.error('Failed to fetch project images');
-            }
-        } catch (error) {
-            console.error('Error fetching project images:', error);
+        if (selectedCamera) {
+            setSelectedCamera('')
+            navigation.navigate('CameraScreen');
         }
-    };
+    }, [selectedCamera]);
 
-    // //TODO fetch from redux the images 
-    // const fetchProjectImages = () => {
-
-
-    // }
+    //write a test function to navigate to block  page
     const handleNavigateToBlocks = () => {
         navigation.navigate('LeggoScreen', { uid, projectName });
     }
 
+    // Function to handle adding an image
     const handleAddImage = () => {
+        // Open the modal when the "Add Image" button is pressed
         setModalVisible(true);
     };
 
+    // Function to handle selecting an image from camera
     const handleSelectFromCamera = () => {
-        setSelectedCamera(true);
+        // Add logic here to open camera
+        console.log('Selecting image from camera...');
+        // Close the modal after selection if needed
+        setSelectedCamera(!selectedCamera);
         setModalVisible(false);
         setPickerVisible(true);
     };
 
+    // Function to handle selecting an image from image picker
     const handleSelectFromPicker = () => {
+        // Add logic here to open image picker
+        console.log('Selecting image from picker...');
+        // Close the modal after selection if needed
         setModalVisible(false);
         setPickerVisible(true);
     };
-
     return (
         <View style={styles.container}>
-            {/* <ImageCollection images={projectImages} />  */}
-            <LocalImages imagesData={projectImages} />
-            <Button title="Select Block" onPress={handleNavigateToBlocks} />
-            <Button title="make some cool stuff" onPress={handleAddImage} />
-            {/* <Modal
+            <ImageCollection user={uid} projectName={projectName} />
+            {/* <TestProject /> */}
+            {/* Button to add image */}
+            {/* {!pickerVisible && <Button title="Select Block" onPress={handleAddImage} />} */}
+            {!pickerVisible && <Button title="Select Block" onPress={handleNavigateToBlocks} />}
+            {!pickerVisible && <Button title="make some cool stuff" onPress={handleAddImage} />}
+            {/* Modal for selecting image source */}
+            <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
+                    // Close modal on back button press or outside touch
                     setModalVisible(false);
                 }}
             >
@@ -90,7 +88,7 @@ const ProjectScreen = (props) => {
                 selectedCamera={selectedCamera}
                 uid={uid}
                 projectName={projectName}
-                onPressClose={() => setPickerVisible(false)} />} */}
+                onPressClose={() => setPickerVisible(false)} />}
         </View>
     );
 };

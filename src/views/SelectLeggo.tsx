@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { useDispatch } from 'react-redux';
-import { setImageRedux, updateProjects } from '../store'; // Import your action creator
+import { setImageRedux, updateBlocks } from '../store'; // Import your action creator
 
 // Import images statically
 import redImage from '../img/red_2x2.png';
@@ -53,7 +53,7 @@ const LeggoScreen = ({ uid, projectName }) => {
         // Handle picking the selected block
         console.log('Picking selected block:', selectedImage);
         try {
-            await dispatch(updateProjects(selectedImage));
+            await dispatch(updateBlocks(selectedImage));
         } catch (e) {
             console.log(`here is the error ${e}`)
         }
