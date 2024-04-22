@@ -38,6 +38,10 @@ const userSlice = createSlice({
     setProjectName: (state, action) => {
       state.project = action.payload;
     },
+    setProject: (state, action) => {
+      console.log(` and the actioin is ${JSON.stringify(action.payload)}`);
+      state.project.blocks = action.payload.blocks;
+    },
     updateBlocks: (state, action) => {
       state.project.blocks.push(action.payload);
     },
@@ -58,6 +62,7 @@ export const {
   setImageRedux,
   updateBlocks,
   setProjectName,
+  setProject,
 } = userSlice.actions;
 
 export const selectUser = state => state.user.user;

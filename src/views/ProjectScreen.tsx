@@ -7,33 +7,57 @@ import { useNavigation } from '@react-navigation/native';
 import DeleteModal from '../Components/DeleteModal';
 import { getProjects } from '../services/firebase';
 import LocalImages from '../Components/LocalImages';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProject, updateBlocks } from '../store'
+import LeggoModal from './LeggoModal';
 const ProjectScreen = (props) => {
     const { params: { uid, projectName } } = props.route;
+    const project = useSelector((state) => state.user.project)
+
     const navigation = useNavigation();
 
     const [modalVisible, setModalVisible] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
     const [selectedCamera, setSelectedCamera] = useState(false);
     const [projectImages, setProjectImages] = useState([]);
-    const dispatch = useDispatch()
+    const [show, setShow] = useState(false);
+    const dispatch = useDispatch();
     //populate redux too
     useEffect(() => {
         // Fetch images for the project before component mounts
         fetchProjectImages();
 
     }, []);
-
+    useEffect(() => {
+        // Fetch images for the project before component mounts
+        //fetchProjectImages();
+        console.log(`the project ${project.blocks}`)
+        setProjectImages(project.blocks)
+    }, [project]);
     const fetchProjectImages = async () => {
         try {
             // Make a get to firebase to get the images for a given project
             const response = await getProjects(projectName)
             console.log(`here is the response ${JSON.stringify(response)}`)
             if (response) {
+
+                // const blocksFromFetch = response.blocks;
+                // await dispatch(setProject({ name: projectName, blocks: blocksFromFetch }));
+                // // 
+                console.log(`projectBlocks: ${project.blocks}`)
                 // const data = await response.json();
-                const { blocks } = response
-                console.log(`here is blocks ${blocks.length}`)
-                setProjectImages(blocks); // Assuming your API response contains an array of images
+                const blocksFromFetch = response.blocks;
+                console.log(`blocksFrom fetch ${blocksFromFetch}`)
+                console.log(`project.blocks ${project.blocks.length}`)
+                const updatedBlocks = [...project.blocks, ...blocksFromFetch]; // Using concat
+                console.log(`here are the blocksafter updated ${updatedBlocks} `)
+
+                await dispatch(setProject({
+                    ...project,
+                    blocks: updatedBlocks,
+                }))
+                console.log(`uppdated Blocks ${updatedBlocks} `)
+                //setProjectImages(updatedBlocks); // Assuming your API response contains an array of images
             } else {
                 console.error('Failed to fetch project images');
             }
@@ -48,11 +72,7 @@ const ProjectScreen = (props) => {
 
     // }
     const handleNavigateToBlocks = async () => {
-        try {
-            await dispatch(setProjectName(selectedImage));
-        } catch (e) {
-            console.log(`here is the error ${e}`)
-        }
+        // setShow(true);
         navigation.navigate('LeggoScreen', { uid, projectName });
     }
 
@@ -78,6 +98,7 @@ const ProjectScreen = (props) => {
             {projectImages.length > 0 && <LocalImages imagesData={projectImages} />}
             <Button title="Select Block" onPress={handleNavigateToBlocks} />
             <Button title="make some cool stuff" onPress={handleAddImage} />
+
             {/* <Modal
                 animationType="slide"
                 transparent={true}

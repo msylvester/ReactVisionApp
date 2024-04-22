@@ -24,10 +24,10 @@ const HomeScreen = () => {
     const [buttonVibrations, setButtonVibrations] = useState(Array(projects.length).fill(false));
     const projectRef = useRef(null);
 
-    useEffect(() => {
-        projectRef.current = project;
-        console.log('Updated project:', projectRef.current);
-    }, [project]);
+    // useEffect(() => {
+    //     projectRef.current = project;
+    //     console.log('Updated project:', projectRef.current);
+    // }, [project]);
     const handleButtonPress = async (index, projectName) => {
         if (isDeleteActive) {
             const newButtonVibrations = [...buttonVibrations];
@@ -45,7 +45,7 @@ const HomeScreen = () => {
                 }))
                 console.log(`ere isteh project ${JSON.stringify(project)}`)
 
-                navigation.navigate('ProjectScreen', { uid, projectName: selected });
+                navigation.navigate('ProjectScreen', { uid, projectName: selected, project });
             }
         }
     };

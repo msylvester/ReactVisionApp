@@ -3,10 +3,9 @@ import { View, Image, StyleSheet } from 'react-native';
 import imageMap from '../constants'; // Import the imageMap from constants file
 
 const LocalImages = ({ imagesData }) => {
-    console.log(`imagesData ${imagesData}`)
-    console.log(`imagesap ${JSON.stringify(imageMap)}`)
+    console.log(`local images data ${JSON.stringify(imagesData)}`)
     return (
-        <View style={styles.container}>
+        <View style={styles.ceeeontainer}>
             {imagesData.map((imageName, index) => (
                 <Image
                     key={index}

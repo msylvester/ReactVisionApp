@@ -8,7 +8,7 @@ import {
     Text
 } from 'react-native';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setImageRedux, updateBlocks } from '../store'; // Import your action creator
 
 // Import images statically
@@ -17,21 +17,24 @@ import blueImage from '../img/blue_2x2.png';
 import blackImage from '../img/black_2x2.png';
 import greenImage from '../img/green_2x2.png';
 import greyImage from '../img/grey_2x2.png';
+import { useNavigation } from '@react-navigation/native';
 import { imageFilenames, imagePaths } from '../filenameConsants';
-const LeggoScreen = ({ uid, projectName }) => {
+const LeggoScreen = (props) => {
     // Specify image filenames manually
+    const { params: { uid, projectName } } = props.route
+    const navigation = useNavigation();
 
     const dispatch = useDispatch()
-
+    const project = useSelector((state) => state.user.project)
     // Construct image paths from imported images
-
-
+    console.log(`te rpoject in leggo screen is ${JSON.stringify(project)}`)
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const handleImageSelect = (filename: string) => {
         // Handle selection of the image
-        setSelectedImage(filename);
         console.log('Selected image:', filename);
+        setSelectedImage(filename);
+
     };
 
 
@@ -39,8 +42,11 @@ const LeggoScreen = ({ uid, projectName }) => {
     const handlePickSelectedBlock = async () => {
         // Handle picking the selected block
         console.log('Picking selected block:', selectedImage);
+        const selectedImage_without_extension = selectedImage.slice(0, -4);
+
         try {
-            await dispatch(updateBlocks(selectedImage));
+            await dispatch(updateBlocks(selectedImage_without_extension));
+            //navigation.navigate('ProjectScreen', uid, projectName, selectedImage)
         } catch (e) {
             console.log(`here is the error ${e}`)
         }
@@ -71,6 +77,7 @@ const LeggoScreen = ({ uid, projectName }) => {
             <TouchableOpacity onPress={handlePickSelectedBlock} style={styles.button}>
                 <Text style={styles.buttonText}>Pick Selected Block</Text>
             </TouchableOpacity>
+
         </View>
     );
 };

@@ -48,6 +48,7 @@ const AppNavigator = (props: { initialRouteName: any; }) => {
             <Stack.Screen name="ProjectScreen" component={ProjectScreen} />
             <Stack.Screen name="CameraScreen" component={CameraScreen} />
             <Stack.Screen name="LeggoScreen" component={LeggoScreen} />
+
         </Stack.Navigator >
     );
 };
