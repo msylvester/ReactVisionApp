@@ -6,7 +6,7 @@ import { updateUser } from '../services/firebase';
 import { setUser } from '../store';
 import DeleteModal from '../Components/DeleteModal';
 import imageMap from '../constants'; // Adjust the path as necessary
-
+import homeScreenStyles from '../styles/homeScreenStyles';
 const HomeScreen = () => {
     const user = useSelector((state) => state.user.user);
     const { uid, projects, email, permissionCamera } = user;
@@ -69,7 +69,6 @@ const HomeScreen = () => {
             />
         );
     };
-
     const renderProjectButton = () => {
         return (
             <View style={styles.projectButtonsContainer}>
@@ -83,7 +82,8 @@ const HomeScreen = () => {
                             ]}
                             onPress={() => handleButtonPress(item)}
                         >
-                            <Image source={imageMap.logo} style={styles.projectImage} resizeMode="contain" />
+                            <Image source={imageMap.folder_img} style={styles.projectImage} resizeMode="contain" />
+                            <Text style={styles.projectNameText}>{item}</Text>
                         </TouchableOpacity>
                     )}
                     keyExtractor={(item) => item}
@@ -93,6 +93,29 @@ const HomeScreen = () => {
             </View>
         );
     };
+    // const renderProjectButton = () => {
+    //     return (
+    //         <View style={styles.projectButtonsContainer}>
+    //             <FlatList
+    //                 data={projects}
+    //                 renderItem={({ item }) => (
+    //                     <TouchableOpacity
+    //                         style={[
+    //                             styles.button,
+    //                             selected === item && styles.selectedButton
+    //                         ]}
+    //                         onPress={() => handleButtonPress(item)}
+    //                     >
+    //                         <Image source={imageMap.folder_img} style={styles.projectImage} resizeMode="contain" />
+    //                     </TouchableOpacity>
+    //                 )}
+    //                 keyExtractor={(item) => item}
+    //                 numColumns={3} // Display 3 buttons per row
+    //             />
+    //             {renderDeleteModal()}
+    //         </View>
+    //     );
+    // };
 
     return (
         <View style={styles.container}>
@@ -141,7 +164,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#87CEEB', // Medium blue background color
+        backgroundColor: '#3F00FF', // Medium blue background color
         paddingHorizontal: 10,
         paddingTop: 20,
     },
@@ -205,6 +228,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 20,
+    },
+    projectNameText: {
+        marginTop: 5,
+        fontSize: 14,
+        color: '#333',
+        textAlign: 'center',
     },
 });
 
