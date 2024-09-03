@@ -120,7 +120,7 @@ const HomeScreen = () => {
     return (
         <View style={styles.container}>
             {renderProjectButton()}
-            <View style={styles.bottomButtonsContainer}>
+            {/* <View style={styles.bottomButtonsContainer}>
                 <Button
                     style={styles.modalText}
                     title="New Project"
@@ -134,7 +134,30 @@ const HomeScreen = () => {
                     color="#ff0000"
                 />
                 <Button title="Go To Project" onPress={() => goToProject(selected)} disabled={!selected} color="#ff0000" />
+            </View> */}
+            {/* <View style={styles.bottomButtonsContainer}>
+                <TouchableOpacity style={styles.bottomButton} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.bottomButtonText}>New Project</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.bottomButton, { backgroundColor: selected ? '#ff0000' : '#ccc' }]} onPress={handleDelete} disabled={!selected}>
+                    <Text style={styles.bottomButtonText}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.bottomButton, { backgroundColor: selected ? '#ff0000' : '#ccc' }]} onPress={() => goToProject(selected)} disabled={!selected}>
+                    <Text style={styles.bottomButtonText}>Go To Project</Text>
+                </TouchableOpacity>
+            </View> */}
+            <View style={styles.bottomButtonsContainer}>
+                <TouchableOpacity style={styles.bottomButton} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.bottomButtonText}>New Project</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.bottomButton, { backgroundColor: selected ? '#ff0000' : '#0033cc' }]} onPress={handleDelete} disabled={!selected}>
+                    <Text style={styles.bottomButtonText}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.bottomButton, { backgroundColor: selected ? '#ff0000' : '#0033cc' }]} onPress={() => goToProject(selected)} disabled={!selected}>
+                    <Text style={styles.bottomButtonText}>Go To Project</Text>
+                </TouchableOpacity>
             </View>
+
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -164,23 +187,27 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#3F00FF', // Medium blue background color
+        backgroundColor: '#0033cc', // Darker blue background color
         paddingHorizontal: 10,
         paddingTop: 20,
     },
     button: {
-        flex: 1,
-        padding: 10,
-        margin: 5,
-        borderRadius: 10,
+        width: 100, // Set the width of the button container
+        height: 100, // Set the height of the button container to be the same as width
+        borderRadius: 10, // Optional: Rounded corners
+        backgroundColor: '#f0f0f0',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f0f0f0',
+        margin: 10,
+    },
+    buttonText: {
+        fontSize: 16,
+        color: '#333',
     },
     projectImage: {
-        width: '80%', // Make the image take up 80% of the button width
-        height: undefined, // Allow height to adjust based on aspect ratio
-        aspectRatio: 1, // Ensure the image maintains a square aspect ratio
+        width: '70%', // Make the image take up 70% of the button width
+        height: '70%', // Make the image take up 70% of the button height
+        resizeMode: 'contain',
     },
     selectedButton: {
         backgroundColor: '#2ecc71',
@@ -223,11 +250,28 @@ const styles = StyleSheet.create({
     },
     projectButtonsContainer: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     bottomButtonsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 20,
+    },
+    bottomButton: {
+        width: 120, // Slightly larger width
+        height: 50, // Height to be larger than the font size
+        borderRadius: 10, // Optional: Rounded corners
+        backgroundColor: '#0033cc', // Matching the blue background
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5,
+        borderWidth: 2, // Set the border width
+        borderColor: '#ffffff', // Set the border color to white
+    },
+    bottomButtonText: {
+        color: '#ffffff', // Text color to contrast with the blue background
+        fontSize: 16, // Adjusted font size to match button size
     },
     projectNameText: {
         marginTop: 5,
@@ -236,5 +280,199 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         backgroundColor: '#0033cc', // Darker blue background color
+//         paddingHorizontal: 10,
+//         paddingTop: 20,
+//     },
+//     button: {
+//         width: 100, // Set the width of the button container
+//         height: 100, // Set the height of the button container to be the same as width
+//         borderRadius: 10, // Optional: Rounded corners
+//         backgroundColor: '#f0f0f0',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         margin: 10,
+//     },
+//     buttonText: {
+//         fontSize: 16,
+//         color: '#333',
+//     },
+//     projectImage: {
+//         width: '70%', // Make the image take up 70% of the button width
+//         height: '70%', // Make the image take up 70% of the button height
+//         resizeMode: 'contain',
+//     },
+//     selectedButton: {
+//         backgroundColor: '#2ecc71',
+//     },
+//     centeredView: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         marginTop: 22,
+//     },
+//     modalView: {
+//         margin: 20,
+//         backgroundColor: 'white',
+//         borderRadius: 20,
+//         padding: 35,
+//         alignItems: 'center',
+//         shadowColor: '#000',
+//         shadowOffset: {
+//             width: 0,
+//             height: 2,
+//         },
+//         shadowOpacity: 0.25,
+//         shadowRadius: 4,
+//         elevation: 5,
+//     },
+//     modalText: {
+//         marginBottom: 15,
+//         textAlign: 'center',
+//         color: '#ff0000',
+//         fontWeight: 'bold',
+//     },
+//     input: {
+//         height: 40,
+//         width: '100%',
+//         marginBottom: 20,
+//         borderWidth: 1,
+//         borderColor: '#ccc',
+//         padding: 10,
+//         color: '#ff0000',
+//     },
+//     projectButtonsContainer: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//     },
+//     bottomButtonsContainer: {
+//         flexDirection: 'row',
+//         justifyContent: 'space-around',
+//         marginTop: 20,
+//     },
+//     bottomButton: {
+//         width: 80, // Square width for the button container
+//         height: 80, // Square height for the button container
+//         borderRadius: 10, // Optional: Rounded corners
+//         backgroundColor: '#0033cc', // Matching the blue background
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         margin: 5,
+//         borderWidth: 2, // Set the border width
+//         borderColor: '#ffffff', // Set the border color to white
+//     },
+//     bottomButtonText: {
+//         color: '#ffffff', // Text color to contrast with the blue background
+//         fontSize: 14,
+//     },
+//     projectNameText: {
+//         marginTop: 5,
+//         fontSize: 14,
+//         color: '#333',
+//         textAlign: 'center',
+//     },
+// });
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         backgroundColor: '#0033cc', // Darker blue background color
+//         paddingHorizontal: 10,
+//         paddingTop: 20,
+//     },
+//     button: {
+//         width: 100, // Set the width of the button container
+//         height: 100, // Set the height of the button container to be the same as width
+//         borderRadius: 10, // Optional: Rounded corners
+//         backgroundColor: '#f0f0f0',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         margin: 10,
+//     },
+//     buttonText: {
+//         fontSize: 16,
+//         color: '#333',
+//     },
+//     projectImage: {
+//         width: '70%', // Make the image take up 70% of the button width
+//         height: '70%', // Make the image take up 70% of the button height
+//         resizeMode: 'contain',
+//     },
+//     selectedButton: {
+//         backgroundColor: '#2ecc71',
+//     },
+//     centeredView: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         marginTop: 22,
+//     },
+//     modalView: {
+//         margin: 20,
+//         backgroundColor: 'white',
+//         borderRadius: 20,
+//         padding: 35,
+//         alignItems: 'center',
+//         shadowColor: '#000',
+//         shadowOffset: {
+//             width: 0,
+//             height: 2,
+//         },
+//         shadowOpacity: 0.25,
+//         shadowRadius: 4,
+//         elevation: 5,
+//     },
+//     modalText: {
+//         marginBottom: 15,
+//         textAlign: 'center',
+//         color: '#ff0000',
+//         fontWeight: 'bold',
+//     },
+//     input: {
+//         height: 40,
+//         width: '100%',
+//         marginBottom: 20,
+//         borderWidth: 1,
+//         borderColor: '#ccc',
+//         padding: 10,
+//         color: '#ff0000',
+//     },
+//     projectButtonsContainer: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//     },
+//     bottomButtonsContainer: {
+//         flexDirection: 'row',
+//         justifyContent: 'space-around',
+//         marginTop: 20,
+//     },
+//     bottomButton: {
+//         width: 80, // Square width for the button container
+//         height: 80, // Square height for the button container
+//         borderRadius: 10, // Optional: Rounded corners
+//         backgroundColor: '#f0f0f0',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         margin: 5,
+//         borderWidth: 2, // Set the border width
+//         borderColor: '#ffffff', // Set the border color to white
+//     },
+//     bottomButtonText: {
+//         color: '#fff',
+//         fontSize: 14,
+//     },
+//     projectNameText: {
+//         marginTop: 5,
+//         fontSize: 14,
+//         color: '#333',
+//         textAlign: 'center',
+//     },
+// });
 
 export default HomeScreen;
